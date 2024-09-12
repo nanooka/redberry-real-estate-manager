@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "FiraGO";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(@fontsource/firago/files/firago-latin-400-normal.woff2)
+      format("woff2"),
+    url(@fontsource/firago/files/firago-latin-400-normal.woff) format("woff");
+}
+
+@font-face {
+  font-family: "FiraGO";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(@fontsource/firago/files/firago-latin-500-normal.woff2)
+      format("woff2"),
+    url(@fontsource/firago/files/firago-latin-500-normal.woff) format("woff");
+}
+
+@font-face {
+  font-family: "FiraGO";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(@fontsource/firago/files/firago-latin-700-normal.woff2)
+      format("woff2"),
+    url(@fontsource/firago/files/firago-latin-700-normal.woff) format("woff");
+}
+* {
+  font-family: "FiraGO", sans-serif;
+}
