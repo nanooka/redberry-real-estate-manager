@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import ChooseBtn from "./ChooseBtn";
 
-export default function RegionContainer() {
+export default function RegionContainer({ setActiveFilter }) {
   const [regions, setRegions] = useState([]);
   const [selectedRegions, setSelectedRegions] = useState({});
 
@@ -11,7 +12,6 @@ export default function RegionContainer() {
           "https://api.real-estate-manager.redberryinternship.ge/api/regions"
         );
         const data = await res.json();
-        // console.log(data);
         const initialSelections = data.reduce((acc, region) => {
           acc[region.id] = false;
           return acc;
@@ -32,7 +32,10 @@ export default function RegionContainer() {
   };
 
   return (
-    <div className="bg-[#fff] absolute top-[50px] -left-[21px] w-[731px] h-[284px] rounded-[10px] p-[24px] border border-[#DBDBDB] flex flex-col justify-between">
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="bg-[#fff] absolute top-[50px] left-0 w-[731px] h-[284px] rounded-[10px] p-[24px] border border-[#DBDBDB] flex flex-col justify-between cursor-context-menu"
+    >
       <span className="text-[#021526] font-[500] text-[16px]">
         რეგიონის მიხედვით
       </span>
@@ -55,9 +58,7 @@ export default function RegionContainer() {
           </label>
         ))}
       </div>
-      <button className="bg-[#f93b1d] rounded-[8px] px-[14px] py-[8px] text-[#fff] font-[500] text-[14px] hover:bg-[#DF3014] self-end">
-        არჩევა
-      </button>
+      <ChooseBtn setActiveFilter={setActiveFilter} />
     </div>
   );
 }
