@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChooseBtn from "./ChooseBtn";
 
 export default function PriceContainer({ setActiveFilter }) {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [errorPrice, setErrorPrice] = useState(false);
 
   const prices = [50000, 100000, 150000, 200000, 300000];
 
@@ -30,23 +31,33 @@ export default function PriceContainer({ setActiveFilter }) {
     }
   };
 
+  useEffect(() => {
+    if (minPrice && maxPrice && parseFloat(maxPrice) < parseFloat(minPrice)) {
+      setErrorPrice(true);
+    } else {
+      setErrorPrice(false);
+    }
+  }, [minPrice, maxPrice]);
+
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="flex flex-col gap-[24px] justify-between bg-[#fff] absolute top-[50px] left-0 w-[382px] h-[372px] rounded-[10px] p-[24px] border border-[#DBDBDB] cursor-context-menu"
+      className="flex flex-col gap-[24px] justify-between bg-[#fff] absolute top-[50px] left-0 w-[382px]  rounded-[10px] p-[24px] border border-[#DBDBDB] cursor-context-menu"
     >
       <span className="text-[#021526] font-[500] text-[16px]">
         ფასის მიხედვით
       </span>
 
-      <div className="flex gap-[14px]">
+      <div className="flex gap-[14px] relative">
         <div className="relative w-[155px]">
           <input
             type="text"
             value={minPrice}
             onChange={handleMinPriceChange}
             placeholder="დან"
-            className="w-[155px] h-[42px] p-[10px] border border-[#808A93] rounded-[6px] text-[14px] outline-none"
+            className={`w-[155px] h-[42px] p-[10px] border rounded-[6px] text-[14px] outline-none ${
+              errorPrice ? "border-[#F93B1D]" : "border-[#808A93]"
+            }`}
           />
           <span className="absolute right-[10px] top-[12px] text-[#2D3648] text-[12px]">
             ₾
@@ -59,12 +70,20 @@ export default function PriceContainer({ setActiveFilter }) {
             value={maxPrice}
             onChange={handleMaxPriceChange}
             placeholder="მდე"
-            className="w-[155px] h-[42px] p-[10px] border border-[#808A93] rounded-[6px] text-[14px] outline-none"
+            className={`w-[155px] h-[42px] p-[10px] border rounded-[6px] text-[14px] outline-none ${
+              errorPrice ? "border-[#F93B1D]" : "border-[#808A93]"
+            }`}
           />
           <span className="absolute right-[10px] top-[12px] text-[#2D3648] text-[12px]">
             ₾
           </span>
         </div>
+
+        {errorPrice && (
+          <span className="text-[#F93B1D] text-[12px] absolute -bottom-[24px]">
+            ჩაწერეთ ვალიდური მონაცემები
+          </span>
+        )}
       </div>
 
       <div className="flex gap-[100px]">

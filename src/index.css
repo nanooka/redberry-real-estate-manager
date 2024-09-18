@@ -31,6 +31,3 @@
       format("woff2"),
     url(@fontsource/firago/files/firago-latin-700-normal.woff) format("woff");
 }
-* {
-  font-family: "FiraGO", sans-serif;
-}

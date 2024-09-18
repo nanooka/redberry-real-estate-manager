@@ -34,12 +34,12 @@ export default function RegionContainer({ setActiveFilter }) {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="bg-[#fff] absolute top-[50px] left-0 w-[731px] h-[284px] rounded-[10px] p-[24px] border border-[#DBDBDB] flex flex-col justify-between cursor-context-menu"
+      className="bg-[#fff] absolute top-[50px] left-0 w-[731px] rounded-[10px] p-[24px] border border-[#DBDBDB] flex flex-col justify-between gap-[32px] cursor-context-menu"
     >
       <span className="text-[#021526] font-[500] text-[16px]">
         რეგიონის მიხედვით
       </span>
-      <div className="grid grid-cols-3 gap-4 mt-[20px]">
+      <div className="grid grid-cols-3 gap-4">
         {regions.map((region) => (
           <label
             key={region.id}

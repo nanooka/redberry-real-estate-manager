@@ -18,11 +18,15 @@ export default function Filter() {
       label: "საფასო კატეგორია",
       component: <PriceContainer setActiveFilter={setActiveFilter} />,
     },
-    { name: "area", label: "ფართობი", component: <AreaContainer /> },
+    {
+      name: "area",
+      label: "ფართობი",
+      component: <AreaContainer setActiveFilter={setActiveFilter} />,
+    },
     {
       name: "rooms",
       label: "საძინებლების რაოდენობა",
-      component: <RoomsContainer />,
+      component: <RoomsContainer setActiveFilter={setActiveFilter} />,
     },
   ];
 
