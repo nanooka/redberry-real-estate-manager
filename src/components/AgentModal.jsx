@@ -116,7 +116,7 @@ export default function AgentModal({ onClose }) {
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.name && (
-                <p className="text-red-500">{errors.name.message}</p>
+                <p className="text-[#F93B1D]">{errors.name.message}</p>
               )}
             </div>
 
@@ -136,7 +136,7 @@ export default function AgentModal({ onClose }) {
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.surname && (
-                <p className="text-red-500">{errors.surname.message}</p>
+                <p className="text-[#F93B1D]">{errors.surname.message}</p>
               )}
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function AgentModal({ onClose }) {
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
+                <p className="text-[#F93B1D]">{errors.email.message}</p>
               )}
             </div>
 
@@ -167,12 +167,26 @@ export default function AgentModal({ onClose }) {
                 ტელეფონის ნომერი*
               </label>
               <input
-                type="tel"
-                {...register("phone", { required: "Phone number is required" })}
+                type="text"
+                {...register("phone", {
+                  required: "ნომერი სავალდებულოა",
+                  pattern: {
+                    value: /^\d+$/,
+                    message: "გამოიყენეთ ნუმერული სიმბოლოები",
+                  },
+                  validate: {
+                    length: (value) =>
+                      value.length === 9 ||
+                      "ნომერი უნდა შედგებოდეს 9 ციფრისგან",
+                    startsWith5: (value) =>
+                      value.startsWith("5") ||
+                      "ნომერი უნდა იყოს ფორმატის 5XXXXXXXX",
+                  },
+                })}
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.phone && (
-                <p className="text-red-500">{errors.phone.message}</p>
+                <p className="text-[#F93B1D]">{errors.phone.message}</p>
               )}
             </div>
           </div>
@@ -184,16 +198,13 @@ export default function AgentModal({ onClose }) {
             <input
               type="file"
               accept="image/*"
-              {...register("avatar", { required: "Image is required" })}
+              {...register("avatar", { required: "ფოტო სავალდებულოა" })}
               className="hidden"
               ref={fileInputRef}
               onChange={handleImageUpload}
             />
             {/* custom input for image */}
-            <div
-              onClick={() => fileInputRef.current.click()}
-              className="border border-dashed border-[#2D3648] w-[799px] h-[120px] rounded-[8px] flex justify-center items-center"
-            >
+            <div className="border border-dashed border-[#2D3648] w-[799px] h-[120px] rounded-[8px] flex justify-center items-center">
               {imagePreview ? (
                 <div className="relative">
                   <img
@@ -217,8 +228,8 @@ export default function AgentModal({ onClose }) {
                 />
               )}
             </div>
-            {errors.image && (
-              <p className="text-red-500">{errors.image.message}</p>
+            {errors.avatar && (
+              <p className="text-[#F93B1D]">{errors.avatar.message}</p>
             )}
           </div>
 
