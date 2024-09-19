@@ -1,48 +1,59 @@
 import { useEffect, useState } from "react";
 import ChooseBtn from "./ChooseBtn";
 
-export default function AreaContainer({ setActiveFilter }) {
-  const [minArea, setMinArea] = useState("");
-  const [maxArea, setMaxArea] = useState("");
+export default function AreaContainer({
+  setActiveFilter,
+  minArea,
+  maxArea,
+  dispatch,
+}) {
+  const [localMinArea, setLocalMinArea] = useState(minArea);
+  const [localMaxArea, setLocalMaxArea] = useState(maxArea);
   const [errorArea, setErrorArea] = useState(false);
+  const [isFormComplete, setIsFormComplete] = useState(false);
 
   const areas = [50, 100, 150, 200, 300];
 
-  const handleMinAreaChange = (e) => {
-    const value = e.target.value;
-    const floatValue = value.match(/^\d*\.?\d{0,2}$/);
-    if (floatValue) setMinArea(floatValue[0]);
-  };
-
-  const handleMaxAreaChange = (e) => {
-    const value = e.target.value;
-    const floatValue = value.match(/^\d*\.?\d{0,2}$/);
-    if (floatValue) setMaxArea(floatValue[0]);
-  };
-
   const handleAreaClick = (area, type) => {
     if (type === "min") {
-      setMinArea(area);
-      if (maxArea && area > maxArea) {
-        setMaxArea("");
+      setLocalMinArea(area);
+      if (localMaxArea && area > localMaxArea) {
+        setLocalMaxArea("");
       }
     } else if (type === "max") {
-      setMaxArea(area);
+      setLocalMaxArea(area);
     }
   };
 
   useEffect(() => {
-    if (minArea && maxArea && parseFloat(maxArea) < parseFloat(minArea)) {
+    if (
+      localMinArea &&
+      localMaxArea &&
+      parseFloat(localMaxArea) < parseFloat(localMinArea)
+    ) {
       setErrorArea(true);
     } else {
       setErrorArea(false);
     }
-  }, [minArea, maxArea]);
+
+    if (localMinArea && localMaxArea) {
+      setIsFormComplete(true);
+    } else {
+      setIsFormComplete(false);
+    }
+  }, [localMinArea, localMaxArea]);
+
+  const handleConfirm = () => {
+    dispatch({
+      type: "SET_AREA",
+      payload: { min: localMinArea, max: localMaxArea },
+    });
+  };
 
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="flex flex-col gap-[24px] justify-between bg-[#fff] absolute top-[50px] left-0 w-[382px] rounded-[10px] p-[24px] border border-[#DBDBDB] cursor-context-menu"
+      className="z-10 flex flex-col gap-[24px] justify-between bg-[#fff] absolute top-[50px] left-0 w-[382px] rounded-[10px] p-[24px] border border-[#DBDBDB] cursor-context-menu shadow-[5px_5px_12px_0px_rgba(2,21,38,0.08)]"
     >
       <span className="text-[#021526] font-[500] text-[16px]">
         ფართობის მიხედვით
@@ -51,9 +62,9 @@ export default function AreaContainer({ setActiveFilter }) {
       <div className="flex gap-[14px] relative">
         <div className="relative w-[155px]">
           <input
-            type="text"
-            value={minArea}
-            onChange={handleMinAreaChange}
+            type="number"
+            value={localMinArea}
+            onChange={(e) => setLocalMinArea(e.target.value)}
             placeholder="დან"
             className={`w-[155px] h-[42px] p-[10px] border rounded-[6px] text-[14px] outline-none ${
               errorArea ? "border-[#F93B1D]" : "border-[#808A93]"
@@ -66,9 +77,9 @@ export default function AreaContainer({ setActiveFilter }) {
 
         <div className="relative w-[155px]">
           <input
-            type="text"
-            value={maxArea}
-            onChange={handleMaxAreaChange}
+            type="number"
+            value={localMaxArea}
+            onChange={(e) => setLocalMaxArea(e.target.value)}
             placeholder="მდე"
             className={`w-[155px] h-[42px] p-[10px] border rounded-[6px] text-[14px] outline-none ${
               errorArea ? "border-[#F93B1D]" : "border-[#808A93]"
@@ -114,10 +125,10 @@ export default function AreaContainer({ setActiveFilter }) {
               <p
                 key={area}
                 className={` cursor-pointer ${
-                  minArea > area ? "opacity-[40%]" : "text-[#2D3648]"
+                  localMinArea > area ? "opacity-[40%]" : "text-[#2D3648]"
                 }`}
                 onClick={() => {
-                  if (minArea <= area) handleAreaClick(area, "max");
+                  if (localMinArea <= area) handleAreaClick(area, "max");
                 }}
               >
                 {area.toLocaleString()}{" "}
@@ -128,7 +139,11 @@ export default function AreaContainer({ setActiveFilter }) {
         </div>
       </div>
 
-      <ChooseBtn setActiveFilter={setActiveFilter} />
+      <ChooseBtn
+        setActiveFilter={setActiveFilter}
+        error={errorArea || !isFormComplete}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

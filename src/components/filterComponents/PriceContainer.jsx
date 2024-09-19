@@ -1,48 +1,59 @@
 import { useEffect, useState } from "react";
 import ChooseBtn from "./ChooseBtn";
 
-export default function PriceContainer({ setActiveFilter }) {
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+export default function PriceContainer({
+  setActiveFilter,
+  minPrice,
+  maxPrice,
+  dispatch,
+}) {
+  const [localMinPrice, setLocalMinPrice] = useState(minPrice);
+  const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice);
   const [errorPrice, setErrorPrice] = useState(false);
+  const [isFormComplete, setIsFormComplete] = useState(false);
 
   const prices = [50000, 100000, 150000, 200000, 300000];
 
-  const handleMinPriceChange = (e) => {
-    const value = e.target.value;
-    const floatValue = value.match(/^\d*\.?\d{0,2}$/);
-    if (floatValue) setMinPrice(floatValue[0]);
-  };
-
-  const handleMaxPriceChange = (e) => {
-    const value = e.target.value;
-    const floatValue = value.match(/^\d*\.?\d{0,2}$/);
-    if (floatValue) setMaxPrice(floatValue[0]);
-  };
-
   const handlePriceClick = (price, type) => {
     if (type === "min") {
-      setMinPrice(price);
-      if (maxPrice && price > maxPrice) {
-        setMaxPrice("");
+      setLocalMinPrice(price);
+      if (localMaxPrice && price > localMaxPrice) {
+        setLocalMaxPrice("");
       }
     } else if (type === "max") {
-      setMaxPrice(price);
+      setLocalMaxPrice(price);
     }
   };
 
   useEffect(() => {
-    if (minPrice && maxPrice && parseFloat(maxPrice) < parseFloat(minPrice)) {
+    if (
+      localMinPrice &&
+      localMaxPrice &&
+      parseFloat(localMaxPrice) < parseFloat(localMinPrice)
+    ) {
       setErrorPrice(true);
     } else {
       setErrorPrice(false);
     }
-  }, [minPrice, maxPrice]);
+
+    if (localMinPrice && localMaxPrice) {
+      setIsFormComplete(true);
+    } else {
+      setIsFormComplete(false);
+    }
+  }, [localMinPrice, localMaxPrice]);
+
+  const handleConfirm = () => {
+    dispatch({
+      type: "SET_PRICE",
+      payload: { min: localMinPrice, max: localMaxPrice },
+    });
+  };
 
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="flex flex-col gap-[24px] justify-between bg-[#fff] absolute top-[50px] left-0 w-[382px]  rounded-[10px] p-[24px] border border-[#DBDBDB] cursor-context-menu"
+      className="z-10 flex flex-col gap-[24px] justify-between bg-[#fff] absolute top-[50px] left-0 w-[382px]  rounded-[10px] p-[24px] border border-[#DBDBDB] cursor-context-menu shadow-[5px_5px_12px_0px_rgba(2,21,38,0.08)]"
     >
       <span className="text-[#021526] font-[500] text-[16px]">
         ფასის მიხედვით
@@ -51,9 +62,9 @@ export default function PriceContainer({ setActiveFilter }) {
       <div className="flex gap-[14px] relative">
         <div className="relative w-[155px]">
           <input
-            type="text"
-            value={minPrice}
-            onChange={handleMinPriceChange}
+            type="number"
+            value={localMinPrice}
+            onChange={(e) => setLocalMinPrice(e.target.value)}
             placeholder="დან"
             className={`w-[155px] h-[42px] p-[10px] border rounded-[6px] text-[14px] outline-none ${
               errorPrice ? "border-[#F93B1D]" : "border-[#808A93]"
@@ -66,9 +77,9 @@ export default function PriceContainer({ setActiveFilter }) {
 
         <div className="relative w-[155px]">
           <input
-            type="text"
-            value={maxPrice}
-            onChange={handleMaxPriceChange}
+            type="number"
+            value={localMaxPrice}
+            onChange={(e) => setLocalMaxPrice(e.target.value)}
             placeholder="მდე"
             className={`w-[155px] h-[42px] p-[10px] border rounded-[6px] text-[14px] outline-none ${
               errorPrice ? "border-[#F93B1D]" : "border-[#808A93]"
@@ -113,10 +124,10 @@ export default function PriceContainer({ setActiveFilter }) {
               <p
                 key={price}
                 className={` cursor-pointer ${
-                  minPrice > price ? "opacity-[40%]" : "text-[#2D3648]"
+                  localMinPrice > price ? "opacity-[40%]" : "text-[#2D3648]"
                 }`}
                 onClick={() => {
-                  if (minPrice <= price) handlePriceClick(price, "max");
+                  if (localMinPrice <= price) handlePriceClick(price, "max");
                 }}
               >
                 {price.toLocaleString()} ₾
@@ -126,7 +137,11 @@ export default function PriceContainer({ setActiveFilter }) {
         </div>
       </div>
 
-      <ChooseBtn setActiveFilter={setActiveFilter} />
+      <ChooseBtn
+        setActiveFilter={setActiveFilter}
+        error={errorPrice || !isFormComplete}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
