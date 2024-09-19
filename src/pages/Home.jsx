@@ -3,8 +3,6 @@ import Filter from "../components/Filter";
 import HouseCard from "../components/HouseCard";
 import AgentModal from "../components/AgentModal";
 
-// const token = "9cfe3731-3b40-4381-a6ac-3be97386a45c";
-
 export default function Home() {
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,21 +14,6 @@ export default function Home() {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
-
-  // useEffect(() => {
-  //   const getCities = async () => {
-  //     try {
-  //       const res = await fetch(
-  //         "https://api.real-estate-manager.redberryinternship.ge/api/cities"
-  //       );
-  //       const data = await res.json();
-  //       // console.log(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getCities();
-  // }, []);
   return (
     <div className="py-[80px] w-[1596px] ml-[120px] mx-auto ">
       <div className="flex justify-between">

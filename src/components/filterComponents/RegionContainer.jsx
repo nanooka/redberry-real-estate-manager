@@ -68,7 +68,6 @@ export default function RegionContainer({
               name={region.name}
               checked={selectedRegionsState[region.name]}
               onChange={handleCheckboxChange}
-              // className="accent-[#45A849] border border-[#DBDBDB] rounded-[2px] h-[20px] w-[20px] cursor-pointer "
               className="peer relative appearance-none shrink-0 border border-[#DBDBDB] rounded-[2px] h-[20px] w-[20px] cursor-pointer focus:outline-none checked:bg-[#45A849] checked:border-[#45A849]"
             />
             <svg
