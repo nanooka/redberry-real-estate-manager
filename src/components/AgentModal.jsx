@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-
-const token = "9cfe3731-3b40-4381-a6ac-3be97386a45c";
-const URL = "https://api.real-estate-manager.redberryinternship.ge/api/agents";
+import CustomImageInput from "./CustomImageInput";
+import { addAgent } from "../api/postData";
 
 export default function AgentModal({ onClose }) {
   const {
@@ -11,39 +10,20 @@ export default function AgentModal({ onClose }) {
     formState: { errors },
     setValue,
     clearErrors,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      avatar: null,
+    },
+  });
 
   const modalRef = useRef(null);
-  const fileInputRef = useRef();
-  const [imagePreview, setImagePreview] = useState(null);
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-
-    formData.append("name", data.name);
-    formData.append("surname", data.surname);
-    formData.append("email", data.email);
-    formData.append("phone", data.phone);
-    formData.append("avatar", data.avatar[0]);
-
     try {
-      const response = await fetch(URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          accept: "application/json",
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error: ${response.status} - ${errorText}`);
-      }
-
+      await addAgent(data);
       onClose();
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Failed to add agent:", error);
     }
   };
 
@@ -58,27 +38,6 @@ export default function AgentModal({ onClose }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
-
-  //   for custom image input
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-
-      setValue("avatar", event.target.files);
-      clearErrors("avatar");
-    }
-  };
-
-  const handleImageRemove = () => {
-    setImagePreview(null);
-    fileInputRef.current.value = null;
-    setValue("avatar", []);
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -191,47 +150,12 @@ export default function AgentModal({ onClose }) {
             </div>
           </div>
 
-          <div className="flex flex-col">
-            <label className="text-[#021526] text-[14px] font-[500]">
-              ატვირთეთ ფოტო*
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              {...register("avatar", { required: "ფოტო სავალდებულოა" })}
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-            />
-            {/* custom input for image */}
-            <div className="border border-dashed border-[#2D3648] w-[799px] h-[120px] rounded-[8px] flex justify-center items-center">
-              {imagePreview ? (
-                <div className="relative">
-                  <img
-                    src={imagePreview}
-                    alt="Selected"
-                    className="object-cover w-[92px] h-[82px] rounded-[4px]"
-                  />
-                  <img
-                    onClick={handleImageRemove}
-                    src="/images/trashIcon.svg"
-                    alt="remove"
-                    className="absolute -right-[6px] -bottom-[6px] cursor-pointer"
-                  />
-                </div>
-              ) : (
-                <img
-                  src="/images/plusIcon.svg"
-                  alt="add"
-                  className="cursor-pointer"
-                  onClick={() => fileInputRef.current.click()}
-                />
-              )}
-            </div>
-            {errors.avatar && (
-              <p className="text-[#F93B1D]">{errors.avatar.message}</p>
-            )}
-          </div>
+          <CustomImageInput
+            setValue={setValue}
+            clearErrors={clearErrors}
+            errors={errors}
+            register={register}
+          />
 
           <div className="flex gap-[28px] self-end">
             <button

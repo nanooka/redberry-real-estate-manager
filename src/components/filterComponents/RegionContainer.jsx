@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ChooseBtn from "./ChooseBtn";
+import { getRegions } from "../../api/getData";
 
 export default function RegionContainer({
   setActiveFilter,
@@ -10,13 +11,9 @@ export default function RegionContainer({
   const [selectedRegionsState, setSelectedRegionsState] = useState({});
 
   useEffect(() => {
-    const getRegions = async () => {
+    const fetchRegions = async () => {
       try {
-        const res = await fetch(
-          "https://api.real-estate-manager.redberryinternship.ge/api/regions"
-        );
-        const data = await res.json();
-
+        const data = await getRegions();
         setRegions(data);
 
         const initialSelections = data.reduce((acc, region) => {
@@ -26,10 +23,11 @@ export default function RegionContainer({
 
         setSelectedRegionsState(initialSelections);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching regions:", error);
       }
     };
-    getRegions();
+
+    fetchRegions();
   }, [selectedRegions]);
 
   const handleCheckboxChange = (event) => {

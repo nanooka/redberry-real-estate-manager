@@ -15,7 +15,7 @@ export default function HouseCard({
     .replace(/,/g, " ");
 
   return (
-    <div className="relative w-[384px] border border-[#DBDBDB] rounded-[14px] overflow-hidden shadow-[5px_5px_12px_0px_rgba(2,21,38,0.08)]">
+    <div className="relative w-[384px] border border-[#DBDBDB] rounded-[14px] overflow-hidden shadow-[5px_5px_12px_0px_rgba(2,21,38,0.08)] cursor-pointer">
       <div className="absolute top-[20px] left-[20px] bg-[#02152680] rounded-[15px] p-[6px] w-[90px] flex justify-center">
         <span className="text-[#fff] text-[12px] font-[500] tracking-[0.04em]">
           {condition}

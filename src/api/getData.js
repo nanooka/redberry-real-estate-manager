@@ -1,8 +1,9 @@
+const token = "9cfe3731-3b40-4381-a6ac-3be97386a45c";
+const URL = "https://api.real-estate-manager.redberryinternship.ge/api";
+
 export const getRegions = async () => {
   try {
-    const res = await fetch(
-      "https://api.real-estate-manager.redberryinternship.ge/api/regions"
-    );
+    const res = await fetch(`${URL}/regions`);
     const data = await res.json();
     return data;
   } catch (error) {
@@ -12,12 +13,56 @@ export const getRegions = async () => {
 
 export const getCities = async () => {
   try {
-    const res = await fetch(
-      "https://api.real-estate-manager.redberryinternship.ge/api/cities"
-    );
+    const res = await fetch(`${URL}/cities`);
     const data = await res.json();
     return data;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const getAgents = async () => {
+  try {
+    const res = await fetch(`${URL}/agents`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Error: ${res.status} - ${errorText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const getRealEstates = async () => {
+  try {
+    const res = await fetch(`${URL}/real-estates`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Error: ${res.status} - ${errorText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
   }
 };
