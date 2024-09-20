@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function CustomImageInput({
   setValue,
@@ -6,9 +6,18 @@ export default function CustomImageInput({
   errors,
   register,
   setError,
+  onChange,
+  saveToLocalStorage = false,
 }) {
   const fileInputRef = useRef();
   const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    const storedImage = localStorage.getItem("avatar");
+    if (storedImage) {
+      setImagePreview(storedImage);
+    }
+  }, []);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -25,11 +34,18 @@ export default function CustomImageInput({
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
+        if (saveToLocalStorage) {
+          localStorage.setItem("avatar", reader.result);
+        }
       };
       reader.readAsDataURL(file);
 
       setValue("avatar", event.target.files);
       clearErrors("avatar");
+
+      if (onChange) {
+        onChange(event);
+      }
     }
   };
 
@@ -37,10 +53,18 @@ export default function CustomImageInput({
     setImagePreview(null);
     fileInputRef.current.value = null;
     setValue("avatar", null);
+
+    if (saveToLocalStorage) {
+      localStorage.removeItem("avatar");
+    }
+
+    if (onChange) {
+      onChange({ target: { name: "avatar", value: null } });
+    }
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col relative">
       <label className="text-[#021526] text-[14px] font-[500]">
         ატვირთეთ ფოტო*
       </label>
@@ -77,7 +101,9 @@ export default function CustomImageInput({
         )}
       </div>
       {errors.avatar && (
-        <p className="text-[#F93B1D]">{errors.avatar.message}</p>
+        <span className="absolute -bottom-[24px] text-[#F93B1D] text-[14px]">
+          {errors.avatar.message}
+        </span>
       )}
     </div>
   );

@@ -58,7 +58,7 @@ export default function AgentModal({ onClose }) {
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-[28px]"
         >
-          <div className="flex gap-[28px]">
+          <div className="flex gap-[28px] relative">
             <div className="flex flex-col">
               <label className="text-[#021526] text-[14px] font-[500]">
                 სახელი*
@@ -75,11 +75,13 @@ export default function AgentModal({ onClose }) {
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.name && (
-                <p className="text-[#F93B1D]">{errors.name.message}</p>
+                <span className="absolute -bottom-[24px] text-[#F93B1D] text-[14px]">
+                  {errors.name.message}
+                </span>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col relative">
               <label className="text-[#021526] text-[14px] font-[500]">
                 გვარი*
               </label>
@@ -95,13 +97,15 @@ export default function AgentModal({ onClose }) {
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.surname && (
-                <p className="text-[#F93B1D]">{errors.surname.message}</p>
+                <span className="absolute -bottom-[24px] text-[#F93B1D] text-[14px]">
+                  {errors.surname.message}
+                </span>
               )}
             </div>
           </div>
 
           <div className="flex gap-[28px]">
-            <div className="flex flex-col">
+            <div className="flex flex-col relative">
               <label className="text-[#021526] text-[14px] font-[500]">
                 ელ-ფოსტა*
               </label>
@@ -117,11 +121,13 @@ export default function AgentModal({ onClose }) {
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.email && (
-                <p className="text-[#F93B1D]">{errors.email.message}</p>
+                <span className="absolute -bottom-[24px] text-[#F93B1D] text-[14px]">
+                  {errors.email.message}
+                </span>
               )}
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col relative">
               <label className="text-[#021526] text-[14px] font-[500]">
                 ტელეფონის ნომერი*
               </label>
@@ -145,7 +151,9 @@ export default function AgentModal({ onClose }) {
                 className="border border-[#808A93] w-[384px] rounded-[6px] p-[10px] focus:outline-none"
               />
               {errors.phone && (
-                <p className="text-[#F93B1D]">{errors.phone.message}</p>
+                <span className="absolute -bottom-[24px] text-[#F93B1D] text-[14px]">
+                  {errors.phone.message}
+                </span>
               )}
             </div>
           </div>
