@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HouseCard from "../HouseCard";
 import { getRealEstates } from "../../api/getData";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 export default function SimilarHouses() {
   const [realEstates, setRealEstates] = useState([]);
+  const swiperRef = useRef(null);
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
   useEffect(() => {
     const fetchRealEstates = async () => {
@@ -14,21 +21,77 @@ export default function SimilarHouses() {
   }, []);
 
   return (
-    <div>
-      {realEstates?.map((house) => (
-        <HouseCard
-          key={house.id}
-          image={house.image}
-          condition={house.is_rental == 1 ? "ქირავდება" : "იყიდება"}
-          price={house.price}
-          address={house.address}
-          city={house.city}
-          rooms={house.bedrooms}
-          area={house.area}
-          zip={house.zip_code}
-          id={house.id}
-        />
-      ))}
+    <div className="max-w-[1596px] mt-[80px] ">
+      <h2 className="text-[#021526] text-[32px] font-[500] mb-[40px]">
+        ბინები მსგავს ლოკაციაზე
+      </h2>
+
+      <div className="relative">
+        <Swiper
+          spaceBetween={20}
+          slidesPerView={4}
+          navigation={{
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          onBeforeInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }}
+          modules={[Navigation]}
+        >
+          {realEstates?.map((house) => (
+            <SwiperSlide key={house.id}>
+              <HouseCard
+                image={house.image}
+                condition={house.is_rental == 1 ? "ქირავდება" : "იყიდება"}
+                price={house.price}
+                address={house.address}
+                city={house.city}
+                rooms={house.bedrooms}
+                area={house.area}
+                zip={house.zip_code}
+                id={house.id}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <div
+          ref={prevRef}
+          className=" absolute top-1/2 -translate-y-1/2 -left-[60px]"
+        >
+          <div className="swiper-button-prev opacity-0"></div>
+          <div className="">
+            {/* <BiSolidLeftArrow
+                onClick={() => swiperRef.current.swiper.slidePrev()}
+              /> */}
+            <img
+              src="/images/arrowLeft.svg"
+              alt="left"
+              onClick={() => swiperRef.current.swiper.slidePrev()}
+            />
+          </div>
+        </div>
+
+        <div
+          ref={nextRef}
+          className=" absolute top-1/2 -translate-y-1/2 -right-[60px]"
+        >
+          <div className="swiper-button-next opacity-0"></div>
+          <div className="">
+            {/* <BiSolidRightArrow
+                onClick={() => swiperRef.current.swiper.slideNext()}
+              /> */}
+            <img
+              src="/images/arrowRight.svg"
+              alt="right"
+              onClick={() => swiperRef.current.swiper.slideNext()}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

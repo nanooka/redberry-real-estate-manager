@@ -34,22 +34,38 @@ export default function SingleListing() {
     .format(houseInfo?.price)
     .replace(/,/g, ", ");
 
+  const formattedDate = houseInfo?.created_at
+    ? new Date(houseInfo.created_at).toLocaleDateString("en-US", {
+        year: "2-digit",
+        month: "2-digit",
+        day: "2-digit",
+      })
+    : "N/A";
+
+  console.log(formattedDate);
+
   return (
     <div className="pl-[100px]">
       {/* <img src="/images/arrowLeft.svg" alt="arrow" /> */}
       <div className="w-[1596px] flex gap-[68px] mt-[120px]">
-        <div className="relative w-[839px] h-[670px] rounded-t-lg overflow-hidden">
-          <div className="absolute top-[20px] left-[20px] bg-[#02152680] rounded-[20px] p-[6px] w-[142px] h-[41px] flex justify-center">
-            <span className="text-[#fff] text-[20px] font-[500] tracking-[0.04em]">
-              {houseInfo?.is_rental === 1 ? "ქირავდება" : "იყიდება"}
-            </span>
+        <div className="relative">
+          <div className="relative w-[839px] h-[670px] rounded-t-lg overflow-hidden">
+            <div className="absolute top-[20px] left-[20px] bg-[#02152680] rounded-[20px] p-[6px] w-[142px] h-[41px] flex justify-center">
+              <span className="text-[#fff] text-[20px] font-[500] tracking-[0.04em]">
+                {houseInfo?.is_rental === 1 ? "ქირავდება" : "იყიდება"}
+              </span>
+            </div>
+            <img
+              src={houseInfo?.image}
+              alt="image"
+              className="w-full h-full object-cover"
+            />
           </div>
-          <img
-            src={houseInfo?.image}
-            alt="image"
-            className="w-full h-full object-cover"
-          />
+          <span className="absolute -bottom-[28px] right-0 text-[#808A93]">
+            გამოქვეყნების თარიღი {formattedDate}
+          </span>
         </div>
+
         <div className="flex flex-col gap-[40px] w-[503px] text-[#808A93]">
           <p className="font-[700] text-[48px] text-[#021526]">
             {formattedPrice} ₾
@@ -117,17 +133,7 @@ export default function SingleListing() {
           </button>
         </div>
       </div>
-
       <SimilarHouses />
-
-      {/* <div className="flex justify-center ">
-        <div className="grid grid-cols-4 gap-[20px] w-[1596px] ">
-          <div className="w-[384px] h-[307px] bg-red-500"></div>
-          <div className="w-[384px] h-[307px] bg-red-500"></div>
-          <div className="w-[384px] h-[307px] bg-red-500"></div>
-          <div className="w-[384px] h-[307px] bg-red-500"></div>
-        </div>
-      </div> */}
     </div>
   );
 }
