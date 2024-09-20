@@ -1,4 +1,5 @@
-const token = "9cfe3731-3b40-4381-a6ac-3be97386a45c";
+// const token = "9cfe3731-3b40-4381-a6ac-3be97386a45c";
+const token = "9d0eba29-1281-4c0d-b431-e0620399b660";
 const URL = "https://api.real-estate-manager.redberryinternship.ge/api";
 
 export const addAgent = async (data) => {
@@ -41,7 +42,7 @@ export const addRealEstate = async (data) => {
   formData.append("image", data.avatar[0]);
   formData.append("city_id", data.city_id);
   formData.append("region_id", parseInt(data.region));
-  formData.append("description", data.desc);
+  formData.append("description", data.description);
   formData.append("zip_code", data.zip_code);
   formData.append("price", parseFloat(data.price));
   formData.append("bedrooms", parseInt(data.bedrooms));

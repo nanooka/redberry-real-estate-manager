@@ -1,18 +1,19 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate();
   return (
     <div className="py-[38px] px-[162px] border border-[#DBDBDB]">
-      <Link to={"/"}>
-        <img
-          onClick={() => {
-            localStorage.removeItem("listingFormData");
-            localStorage.removeItem("avatar");
-          }}
-          src="/images/Logo.svg"
-          alt="logo"
-        />
-      </Link>
+      <img
+        onClick={() => {
+          localStorage.removeItem("listingFormData");
+          localStorage.removeItem("avatar");
+          navigate("/");
+        }}
+        src="/images/Logo.svg"
+        alt="logo"
+        className="cursor-pointer"
+      />
     </div>
   );
 }

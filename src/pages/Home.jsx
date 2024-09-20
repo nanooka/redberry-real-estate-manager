@@ -79,10 +79,12 @@ export default function Home() {
             image={house.image}
             condition={house.is_rental == 1 ? "ქირავდება" : "იყიდება"}
             price={house.price}
-            adress={house.address}
+            address={house.address}
+            city={house.city}
             rooms={house.bedrooms}
             area={house.area}
             zip={house.zip_code}
+            id={house.id}
           />
         ))}
       </div>
