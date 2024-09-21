@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAgents } from "../../api/getData";
+import { getAgents } from "../../services/api/getData";
 
 export default function AgentSelection({
   register,

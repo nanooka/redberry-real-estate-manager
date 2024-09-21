@@ -35,16 +35,31 @@ function filterReducer(state, action) {
   }
 }
 
-export default function Filter() {
-  const [activeFilter, setActiveFilter] = useState(null);
+export default function Filter({ onUpdateFilters }) {
   const [state, dispatch] = useReducer(filterReducer, getInitialState());
+  const [activeFilter, setActiveFilter] = useState(null);
   const filterRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
+  // function getInitialState() {
+  //   const savedState = localStorage.getItem("filterState");
+  //   return savedState ? JSON.parse(savedState) : initialState;
+  // }
+
   function getInitialState() {
     const savedState = localStorage.getItem("filterState");
-    return savedState ? JSON.parse(savedState) : initialState;
+    try {
+      return savedState ? JSON.parse(savedState) : initialState;
+    } catch (error) {
+      console.error("Error parsing state from localStorage", error);
+      return initialState;
+    }
   }
+
+  useEffect(() => {
+    localStorage.setItem("filterState", JSON.stringify(state));
+    onUpdateFilters(state); // Pass the filter state to Home
+  }, [onUpdateFilters, state]);
 
   const filters = [
     {
@@ -104,6 +119,20 @@ export default function Filter() {
     setActiveFilter(activeFilter === filterName ? null : filterName);
   };
 
+  // on click outside close filter containre
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setActiveFilter(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // remove certain filtre
   const handleRemoveFilter = (filterName) => {
     dispatch({ type: "RESET_ONE_FILTER", payload: filterName });
@@ -134,20 +163,6 @@ export default function Filter() {
     },
     { name: "rooms", value: state.rooms, display: `${state.rooms}` },
   ].filter((filter) => filter.value);
-
-  // on click outside close filter containre
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
-        setActiveFilter(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
     <div className="relative" ref={filterRef}>

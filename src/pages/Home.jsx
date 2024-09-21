@@ -3,12 +3,14 @@ import Filter from "../components/Filter";
 import HouseCard from "../components/HouseCard";
 import AgentModal from "../components/AgentModal";
 import { Link } from "react-router-dom";
-import { getRealEstates } from "../api/getData";
+import { getRealEstates } from "../services/api/getData";
+import { filterRealEstates } from "../services/utils/filteredRealEstates";
 
 export default function Home() {
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [realEstates, setRealEstates] = useState([]);
+  const [filterState, setFilterState] = useState(null);
 
   useEffect(() => {
     const fetchRealEstates = async () => {
@@ -18,7 +20,11 @@ export default function Home() {
     fetchRealEstates();
   }, []);
 
-  console.log(realEstates);
+  const handleFilterUpdate = (updatedFilterState) => {
+    setFilterState(updatedFilterState);
+  };
+
+  const filteredRealEstates = filterRealEstates(realEstates, filterState);
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -30,7 +36,7 @@ export default function Home() {
   return (
     <div className="py-[80px] w-[1596px] ml-[120px] mx-auto ">
       <div className="flex justify-between">
-        <Filter />
+        <Filter onUpdateFilters={handleFilterUpdate} />
         <div className="flex gap-[14px]">
           <Link to={"/listing"}>
             <button className="h-[47px] bg-[#F93B1D] text-[#fff] rounded-[10px] flex items-center gap-[2px] py-[10px] px-[16px] cursor-pointer hover:bg-[#DF3014]">
@@ -55,25 +61,7 @@ export default function Home() {
         </div>
       </div>
       <div className="grid grid-cols-4 gap-[20px] mt-[28px]">
-        {/* <HouseCard
-          image="/images/random-image.jpeg"
-          condition="ქირავდება"
-          price={80000}
-          adress="თბილისი, ი. ჭავჭავაძის 53"
-          rooms={2}
-          area={60}
-          zip={1010}
-        />
-        <HouseCard
-          image="/images/random-image.jpeg"
-          condition="იყიდება"
-          price={8000}
-          adress="თბილისი, ი. ჭავჭავაძის 53"
-          rooms={2}
-          area={60}
-          zip={1010}
-        /> */}
-        {realEstates?.map((house) => (
+        {filteredRealEstates?.map((house) => (
           <HouseCard
             key={house.id}
             image={house.image}
@@ -88,6 +76,11 @@ export default function Home() {
           />
         ))}
       </div>
+      {filteredRealEstates.length == 0 && (
+        <p className="text-[#021526CC] text-[20px]">
+          აღნიშნული მონაცემებით განცხადება არ იძებნება
+        </p>
+      )}
 
       {isModalOpen && <AgentModal onClose={handleModalClose} />}
     </div>

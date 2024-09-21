@@ -300,10 +300,10 @@
 // }
 
 import { useEffect, useState } from "react";
-import { getAgents, getCities, getRegions } from "../api/getData";
+import { getAgents, getCities, getRegions } from "../services/api/getData";
 import { useForm } from "react-hook-form";
 import CustomImageInput from "../components/CustomImageInput";
-import { addRealEstate } from "../api/postData";
+import { addRealEstate } from "../services/api/postData";
 import { Link, useNavigate } from "react-router-dom";
 import AgentModal from "../components/AgentModal";
 

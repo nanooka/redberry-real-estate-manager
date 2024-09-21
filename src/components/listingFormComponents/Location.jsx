@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCities, getRegions } from "../../api/getData";
+import { getCities, getRegions } from "../../services/api/getData";
 
 export default function Location({
   register,

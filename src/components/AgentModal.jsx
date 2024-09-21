@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import CustomImageInput from "./CustomImageInput";
-import { addAgent } from "../api/postData";
+import { addAgent } from "../services/api/postData";
 
 export default function AgentModal({ onClose }) {
   const {

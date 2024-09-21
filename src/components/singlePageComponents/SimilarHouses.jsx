@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import HouseCard from "../HouseCard";
-import { getRealEstates } from "../../api/getData";
+import { getRealEstates } from "../../services/api/getData";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-export default function SimilarHouses() {
+export default function SimilarHouses({ region }) {
   const [realEstates, setRealEstates] = useState([]);
+  const [filteredRealEstates, setFilteredRealEstates] = useState([]);
   const swiperRef = useRef(null);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
@@ -19,6 +20,19 @@ export default function SimilarHouses() {
     };
     fetchRealEstates();
   }, []);
+
+  useEffect(() => {
+    if (region) {
+      const filtered = realEstates.filter(
+        (house) => house.city.region.id === region.id
+      );
+      setFilteredRealEstates(filtered);
+    }
+  }, [region, realEstates]);
+
+  // console.log(realEstates.map((house) => console.log(house)));
+
+  // console.log(region);
 
   return (
     <div className="max-w-[1596px] mt-[80px] ">
@@ -42,7 +56,7 @@ export default function SimilarHouses() {
           }}
           modules={[Navigation]}
         >
-          {realEstates?.map((house) => (
+          {filteredRealEstates?.map((house) => (
             <SwiperSlide key={house.id}>
               <HouseCard
                 image={house.image}
@@ -64,9 +78,6 @@ export default function SimilarHouses() {
         >
           <div className="swiper-button-prev opacity-0"></div>
           <div className="">
-            {/* <BiSolidLeftArrow
-                onClick={() => swiperRef.current.swiper.slidePrev()}
-              /> */}
             <img
               src="/images/arrowLeft.svg"
               alt="left"
@@ -81,9 +92,6 @@ export default function SimilarHouses() {
         >
           <div className="swiper-button-next opacity-0"></div>
           <div className="">
-            {/* <BiSolidRightArrow
-                onClick={() => swiperRef.current.swiper.slideNext()}
-              /> */}
             <img
               src="/images/arrowRight.svg"
               alt="right"

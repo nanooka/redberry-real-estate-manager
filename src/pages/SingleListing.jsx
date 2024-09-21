@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getRealEstateByID } from "../api/getData";
-import { deleteRealEstateByID } from "../api/deleteRealEstate";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getRealEstateByID } from "../services/api/getData";
+import { deleteRealEstateByID } from "../services/api/deleteRealEstate";
 import SimilarHouses from "../components/singlePageComponents/SimilarHouses";
+import { formatDate } from "../services/utils/formatUtils";
+import AgentDetails from "../components/singlePageComponents/agentDetails";
+import HouseDetails from "../components/singlePageComponents/HouseDetails";
 
 export default function SingleListing() {
   const { id } = useParams();
@@ -16,6 +19,7 @@ export default function SingleListing() {
     };
     fetchRealEstateByID();
   }, [id]);
+
   console.log(houseInfo);
 
   const handleDelete = async (id) => {
@@ -27,26 +31,11 @@ export default function SingleListing() {
     }
   };
 
-  const formattedPrice = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })
-    .format(houseInfo?.price)
-    .replace(/,/g, ", ");
-
-  const formattedDate = houseInfo?.created_at
-    ? new Date(houseInfo.created_at).toLocaleDateString("en-US", {
-        year: "2-digit",
-        month: "2-digit",
-        day: "2-digit",
-      })
-    : "N/A";
-
-  console.log(formattedDate);
-
   return (
-    <div className="pl-[100px]">
-      {/* <img src="/images/arrowLeft.svg" alt="arrow" /> */}
+    <div className="pl-[176px]">
+      <Link to={"/"} className="absolute top-[170px]">
+        <img src="/images/arrowLeft.svg" alt="arrow" />
+      </Link>
       <div className="w-[1596px] flex gap-[68px] mt-[120px]">
         <div className="relative">
           <div className="relative w-[839px] h-[670px] rounded-t-lg overflow-hidden">
@@ -62,78 +51,23 @@ export default function SingleListing() {
             />
           </div>
           <span className="absolute -bottom-[28px] right-0 text-[#808A93]">
-            გამოქვეყნების თარიღი {formattedDate}
+            გამოქვეყნების თარიღი {formatDate(houseInfo?.created_at)}
           </span>
         </div>
 
-        <div className="flex flex-col gap-[40px] w-[503px] text-[#808A93]">
-          <p className="font-[700] text-[48px] text-[#021526]">
-            {formattedPrice} ₾
-          </p>
-
-          <div>
-            <div className="flex gap-[4px] items-center">
-              <img src="/images/locationIcon.svg" alt="location" />
-              <span className="text-[24px] ">
-                {houseInfo?.city?.name}, {houseInfo.address}
-              </span>
-            </div>
-
-            <div className="flex gap-[5px] items-center">
-              <img src="/images/areaIcon.svg" alt="area" />
-              <span className="text-[24px] ">{houseInfo?.area} მ²</span>
-            </div>
-
-            <div className="flex gap-[5px] items-center">
-              <img src="/images/bedIcon.svg" alt="bed" />
-              <span className="text-[24px] ">{houseInfo?.bedrooms}</span>
-            </div>
-
-            <div className="flex gap-[5px] items-center">
-              <img src="/images/postalIcon.svg" alt="post" />
-              <span className="text-[24px] ">{houseInfo?.zip_code}</span>
-            </div>
-          </div>
-
-          <div>
-            <p>{houseInfo?.description}</p>
-          </div>
-
-          <div className="rounded-[8px] border border-[#DBDBDB]  h-[174px] flex flex-col gap-[10px] p-[20px]">
-            <div className="flex h-[74px] items-center gap-[10px]">
-              <div className="w-[72px] h-[72px] rounded-[100px] overflow-hidden">
-                <img src={houseInfo?.agent?.avatar} alt="agent" />
-              </div>
-              <div>
-                <p className="text-[#021526]">
-                  {houseInfo?.agent?.name} {houseInfo?.agent?.surname}
-                </p>
-                <span className="text-[#676E76] text-[14px]">აგენტი</span>
-              </div>
-            </div>
-
-            <div className="space-y-[4px]">
-              <div className="flex gap-[6px]">
-                <img src="/images/emailIcon.svg" alt="email" />
-                <p className="text-[14px]">{houseInfo?.agent?.email}</p>
-              </div>
-
-              <div className="flex gap-[6px]">
-                <img src="/images/telephoneIcon.svg" alt="phone" />
-                <p className="text-[14px]">{houseInfo?.agent?.phone}</p>
-              </div>
-            </div>
-          </div>
+        <div className="flex flex-col gap-[20px] w-[503px] text-[#808A93] ">
+          <HouseDetails houseInfo={houseInfo} />
+          <AgentDetails agent={houseInfo?.agent} />
 
           <button
             onClick={() => handleDelete(id)}
-            className="self-start border border-[#676E76] text-[#676E76] rounded-[8px] flex items-center px-[10px] text-[12px] font-[500] h-[34px]"
+            className="self-start border border-[#676E76] text-[#676E76] hover:bg-[#676E76] hover:text-[#fff] rounded-[8px] flex items-center px-[10px] text-[12px] font-[500] h-[34px]"
           >
             ლისტინგის წაშლა
           </button>
         </div>
       </div>
-      <SimilarHouses />
+      <SimilarHouses region={houseInfo?.city?.region} />
     </div>
   );
 }

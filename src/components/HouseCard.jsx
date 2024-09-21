@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { formatPrice } from "../services/utils/formatUtils";
 
 export default function HouseCard({
   image,
@@ -11,13 +12,6 @@ export default function HouseCard({
   id,
   city,
 }) {
-  const formattedPrice = new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })
-    .format(price)
-    .replace(/,/g, " ");
-
   return (
     <Link to={`/${id}`}>
       <div className="relative w-[384px] border border-[#DBDBDB] rounded-[14px] overflow-hidden shadow-[5px_5px_12px_0px_rgba(2,21,38,0.08)]">
@@ -29,7 +23,7 @@ export default function HouseCard({
         <img src={image} alt="house" className="h-[307px] object-cover" />
         <div className="flex flex-col gap-[20px] px-[25px] py-[22px]">
           <p className="font-[700] text-[28px] text-[#021526]">
-            {formattedPrice} ₾
+            {formatPrice(price)} ₾
           </p>
           <div className="flex gap-[4px] items-center">
             <img src="/images/locationIcon.svg" alt="location" />

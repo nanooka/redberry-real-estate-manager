@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ChooseBtn from "./ChooseBtn";
-import { getRegions } from "../../api/getData";
+import { getRegions } from "../../services/api/getData";
 
 export default function RegionContainer({
   setActiveFilter,
