@@ -6,7 +6,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-export default function SimilarHouses({ region }) {
+export default function SimilarHouses({ region, isOpen }) {
   const [realEstates, setRealEstates] = useState([]);
   const [filteredRealEstates, setFilteredRealEstates] = useState([]);
   const swiperRef = useRef(null);
@@ -30,12 +30,8 @@ export default function SimilarHouses({ region }) {
     }
   }, [region, realEstates]);
 
-  // console.log(realEstates.map((house) => console.log(house)));
-
-  // console.log(region);
-
   return (
-    <div className="max-w-[1596px] mt-[80px] ">
+    <div className={`max-w-[1596px] mt-[80px] ${isOpen && "opacity-50"}`}>
       <h2 className="text-[#021526] text-[32px] font-[500] mb-[40px]">
         ბინები მსგავს ლოკაციაზე
       </h2>

@@ -16,8 +16,22 @@ export default function CustomImageInput({
     const storedImage = localStorage.getItem("avatar");
     if (storedImage) {
       setImagePreview(storedImage);
+
+      // Convert Base64 string back to File object
+      const byteString = atob(storedImage.split(",")[1]);
+      const mimeString = storedImage.split(",")[0].split(":")[1].split(";")[0];
+      const arrayBuffer = new Uint8Array(byteString.length);
+
+      for (let i = 0; i < byteString.length; i++) {
+        arrayBuffer[i] = byteString.charCodeAt(i);
+      }
+
+      const blob = new Blob([arrayBuffer], { type: mimeString });
+      const file = new File([blob], "uploadedImage.jpg", { type: mimeString });
+
+      setValue("avatar", file); // Ensure this is set correctly
     }
-  }, []);
+  }, [setValue]);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -40,8 +54,12 @@ export default function CustomImageInput({
       };
       reader.readAsDataURL(file);
 
-      setValue("avatar", event.target.files);
+      setValue("avatar", file); // Set the actual file
       clearErrors("avatar");
+
+      if (saveToLocalStorage) {
+        localStorage.setItem("avatar", reader.result);
+      }
 
       if (onChange) {
         onChange(event);

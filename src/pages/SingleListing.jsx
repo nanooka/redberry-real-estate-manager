@@ -6,11 +6,13 @@ import SimilarHouses from "../components/singlePageComponents/SimilarHouses";
 import { formatDate } from "../services/utils/formatUtils";
 import AgentDetails from "../components/singlePageComponents/agentDetails";
 import HouseDetails from "../components/singlePageComponents/HouseDetails";
+import ConfirmationModal from "../components/singlePageComponents/ConfirmationModal";
 
 export default function SingleListing() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [houseInfo, setHouseInfo] = useState({});
+  const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchRealEstateByID = async () => {
@@ -60,14 +62,21 @@ export default function SingleListing() {
           <AgentDetails agent={houseInfo?.agent} />
 
           <button
-            onClick={() => handleDelete(id)}
+            // onClick={() => handleDelete(id)}
+            onClick={() => setModalOpen(true)}
             className="self-start border border-[#676E76] text-[#676E76] hover:bg-[#676E76] hover:text-[#fff] rounded-[8px] flex items-center px-[10px] text-[12px] font-[500] h-[34px]"
           >
             ლისტინგის წაშლა
           </button>
         </div>
       </div>
-      <SimilarHouses region={houseInfo?.city?.region} />
+      <SimilarHouses region={houseInfo?.city?.region} isOpen={isModalOpen} />
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }
