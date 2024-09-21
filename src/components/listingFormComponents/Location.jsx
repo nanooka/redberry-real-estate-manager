@@ -4,8 +4,8 @@ import { getCities, getRegions } from "../../services/api/getData";
 export default function Location({
   register,
   errors,
-  handleInputChange,
   clearErrors,
+  setError,
   reset,
 }) {
   const [regions, setRegions] = useState([]);
@@ -13,36 +13,106 @@ export default function Location({
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
 
+  const handleRegionChange = (e) => {
+    const value = e.target.value;
+    setSelectedRegion(value);
+    clearErrors("region");
+    if (!value) {
+      setError("region", { type: "manual", message: "სავალდებულოა" });
+    }
+    saveToLocalStorage("region", value);
+  };
+
+  const handleCityChange = (e) => {
+    const value = e.target.value;
+    setSelectedCity(value);
+    clearErrors("city_id");
+    if (!value) {
+      setError("city_id", { type: "manual", message: "სავალდებულოა" });
+    }
+    saveToLocalStorage("city_id", value);
+  };
+
+  const handleAddressBlur = (e) => {
+    const value = e.target.value;
+    clearErrors("address");
+    if (!value) {
+      setError("address", { type: "manual", message: "სავალდებულოა" });
+    } else if (value.length < 2) {
+      setError("address", {
+        type: "manual",
+        message: "მინიმუმ ორი სიმბოლო",
+      });
+    }
+  };
+
+  const handleZipCodeBlur = (e) => {
+    const value = e.target.value;
+    clearErrors("zip_code");
+    if (!value) {
+      setError("zip_code", { type: "manual", message: "სავალდებულოა" });
+    } else if (!/^\d+$/.test(value)) {
+      setError("zip_code", {
+        type: "manual",
+        message: "მხოლოდ რიცხვები",
+      });
+    }
+  };
+
+  const saveToLocalStorage = (key, value) => {
+    const existingData =
+      JSON.parse(localStorage.getItem("listingFormData")) || {};
+    localStorage.setItem(
+      "listingFormData",
+      JSON.stringify({ ...existingData, [key]: value })
+    );
+  };
+
   useEffect(() => {
     const fetchRegions = async () => {
       const data = await getRegions();
       setRegions(data);
     };
 
-    fetchRegions();
-  }, []);
-
-  useEffect(() => {
     const fetchCities = async () => {
       const data = await getCities();
       setCities(data);
     };
 
+    fetchRegions();
     fetchCities();
-  }, []);
+
+    const savedData = JSON.parse(localStorage.getItem("listingFormData"));
+    if (savedData) {
+      reset(savedData);
+      setSelectedRegion(savedData.region || "");
+      setSelectedCity(savedData.city_id || "");
+    }
+  }, [reset]);
+
+  // useEffect(() => {
+  //   const fetchRegions = async () => {
+  //     const data = await getRegions();
+  //     setRegions(data);
+  //   };
+
+  //   fetchRegions();
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchCities = async () => {
+  //     const data = await getCities();
+  //     setCities(data);
+  //   };
+
+  //   fetchCities();
+  // }, []);
 
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("listingFormData"));
     if (savedData) {
       reset(savedData);
       setSelectedRegion(savedData.region);
-    }
-  }, [reset, setSelectedRegion]);
-
-  useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem("listingFormData"));
-    if (savedData) {
-      reset(savedData);
       setSelectedCity(savedData.city_id);
     }
   }, [reset]);
@@ -68,7 +138,7 @@ export default function Location({
                 message: "მინიმუმ ორი სიმბოლო",
               },
             })}
-            onChange={handleInputChange}
+            onBlur={handleAddressBlur}
             className="border border-[#808A93] rounded-[6px] p-[10px] focus:outline-none w-[384px] h-[42px]"
           />
           {errors.address && (
@@ -90,7 +160,7 @@ export default function Location({
                 message: "მხოლოდ რიცხვები",
               },
             })}
-            onChange={handleInputChange}
+            onBlur={handleZipCodeBlur}
             className="border border-[#808A93] rounded-[6px] p-[10px] focus:outline-none w-[384px] h-[42px]"
           />
           {errors.zip_code && (
@@ -106,11 +176,7 @@ export default function Location({
           <select
             {...register("region", { required: "სავალდებულოა" })}
             value={selectedRegion}
-            onChange={(e) => {
-              setSelectedRegion(e.target.value);
-              clearErrors("region");
-              handleInputChange(e);
-            }}
+            onChange={handleRegionChange}
             className="border border-[#808A93] rounded-[6px] p-[10px] focus:outline-none w-[384px] h-[42px]"
           >
             <option value="" defaultValue>
@@ -136,10 +202,7 @@ export default function Location({
             <select
               {...register("city_id", { required: "სავალდებულოა" })}
               value={selectedCity}
-              onChange={(e) => {
-                setSelectedCity(e.target.value);
-                handleInputChange(e);
-              }}
+              onChange={handleCityChange}
               className="border border-[#808A93] rounded-[6px] p-[10px] focus:outline-none w-[384px] h-[42px]"
             >
               <option value="" defaultValue>
