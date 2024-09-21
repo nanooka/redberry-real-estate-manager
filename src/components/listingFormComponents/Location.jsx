@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCities, getRegions } from "../../services/api/getData";
+import CustomSelect from "./CustomSelect";
 
 export default function Location({
   register,
@@ -7,29 +8,35 @@ export default function Location({
   clearErrors,
   setError,
   reset,
+  setValue,
 }) {
   const [regions, setRegions] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
 
-  const handleRegionChange = (e) => {
-    const value = e.target.value;
+  console.log(regions);
+  const handleRegionChange = (value) => {
+    // const value = e.target.value;
+    console.log(value);
     setSelectedRegion(value);
     clearErrors("region");
     if (!value) {
       setError("region", { type: "manual", message: "სავალდებულოა" });
     }
+    setValue("region", value);
     saveToLocalStorage("region", value);
   };
 
-  const handleCityChange = (e) => {
-    const value = e.target.value;
+  const handleCityChange = (value) => {
+    // const value = e.target.value;
+    console.log(value);
     setSelectedCity(value);
     clearErrors("city_id");
     if (!value) {
       setError("city_id", { type: "manual", message: "სავალდებულოა" });
     }
+    setValue("city_id", value);
     saveToLocalStorage("city_id", value);
   };
 
@@ -87,35 +94,19 @@ export default function Location({
       reset(savedData);
       setSelectedRegion(savedData.region || "");
       setSelectedCity(savedData.city_id || "");
+      setValue("region", savedData.region || "");
+      setValue("city_id", savedData.city_id || "");
     }
-  }, [reset]);
+  }, [reset, setValue]);
 
   // useEffect(() => {
-  //   const fetchRegions = async () => {
-  //     const data = await getRegions();
-  //     setRegions(data);
-  //   };
-
-  //   fetchRegions();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchCities = async () => {
-  //     const data = await getCities();
-  //     setCities(data);
-  //   };
-
-  //   fetchCities();
-  // }, []);
-
-  useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem("listingFormData"));
-    if (savedData) {
-      reset(savedData);
-      setSelectedRegion(savedData.region);
-      setSelectedCity(savedData.city_id);
-    }
-  }, [reset]);
+  //   const savedData = JSON.parse(localStorage.getItem("listingFormData"));
+  //   if (savedData) {
+  //     reset(savedData);
+  //     setSelectedRegion(savedData.region);
+  //     setSelectedCity(savedData.city_id);
+  //   }
+  // }, [reset]);
 
   const filteredCities = selectedRegion
     ? cities.filter((city) => city.region_id === parseInt(selectedRegion))
@@ -169,57 +160,26 @@ export default function Location({
             </span>
           )}
         </div>
-        <div className="flex flex-col gap-[3px] relative">
-          <label className="text-[#021526] text-[14px] font-[500]">
-            რეგიონი*
-          </label>
-          <select
-            {...register("region", { required: "სავალდებულოა" })}
-            value={selectedRegion}
-            onChange={handleRegionChange}
-            className="border border-[#808A93] rounded-[6px] p-[10px] focus:outline-none w-[384px] h-[42px]"
-          >
-            <option value="" defaultValue>
-              აირჩიე რეგიონი
-            </option>
-            {regions?.map((region) => (
-              <option key={region.name} value={region.id}>
-                {region.name}
-              </option>
-            ))}
-          </select>
-          {errors.region && (
-            <span className="absolute -bottom-[24px] text-[#F93B1D] text-[14px]">
-              {errors.region.message}
-            </span>
-          )}
-        </div>
+
+        <CustomSelect
+          options={regions}
+          selectedValue={selectedRegion}
+          onChange={handleRegionChange}
+          label="რეგიონი"
+          value="region_id"
+          error={errors.region}
+          // register={register}
+        />
         {selectedRegion && (
-          <div className="flex flex-col gap-[3px] relative">
-            <label className="text-[#021526] text-[14px] font-[500]">
-              ქალაქი*
-            </label>
-            <select
-              {...register("city_id", { required: "სავალდებულოა" })}
-              value={selectedCity}
-              onChange={handleCityChange}
-              className="border border-[#808A93] rounded-[6px] p-[10px] focus:outline-none w-[384px] h-[42px]"
-            >
-              <option value="" defaultValue>
-                აირჩიე ქალაქი
-              </option>
-              {filteredCities?.map((city) => (
-                <option key={city.name} value={city.id}>
-                  {city.name}
-                </option>
-              ))}
-            </select>
-            {errors.city_id && (
-              <span className="absolute -bottom-[24px] text-[#F93B1D] text-[14px]">
-                {errors.city_id.message}
-              </span>
-            )}
-          </div>
+          <CustomSelect
+            options={filteredCities}
+            selectedValue={selectedCity}
+            onChange={handleCityChange}
+            label="ქალაქი"
+            value="city_id"
+            error={errors.city_id}
+            // register={register}
+          />
         )}
       </div>
     </div>

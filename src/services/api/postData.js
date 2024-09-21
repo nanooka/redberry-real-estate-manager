@@ -40,7 +40,7 @@ export const addRealEstate = async (data) => {
   formData.append("agent_id", parseInt(data.agent_id));
   formData.append("area", parseFloat(data.area));
   formData.append("image", data.avatar[0]);
-  formData.append("city_id", data.city_id);
+  formData.append("city_id", parseInt(data.city_id));
   formData.append("region_id", parseInt(data.region));
   formData.append("description", data.description);
   formData.append("zip_code", data.zip_code);

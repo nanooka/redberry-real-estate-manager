@@ -39,9 +39,11 @@ export default function Listing() {
   }, [watch]);
 
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       await addRealEstate(data);
       localStorage.removeItem("listingFormData");
+      localStorage.removeItem("avatar");
       navigate("/");
     } catch (error) {
       console.error("Failed to add real estate", error);
@@ -49,13 +51,13 @@ export default function Listing() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-[32px] py-[40px]">
+    <div className="flex flex-col items-center gap-[32px] py-[40px] pb-[80px]">
       <h1 className="text-[#021526] text-[32px] font-[500]">
         ლისტინგის დამატება
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-[790px] h-[1211px] flex flex-col gap-[80px]"
+        className="w-[790px]  flex flex-col gap-[80px]"
       >
         <DealTypeSelection
           register={register}
@@ -71,6 +73,7 @@ export default function Listing() {
           clearErrors={clearErrors}
           setError={setError}
           reset={reset}
+          setValue={setValue}
         />
 
         <PropertyDetails
@@ -97,12 +100,16 @@ export default function Listing() {
           errors={errors}
           setError={setError}
           clearErrors={clearErrors}
+          setValue={setValue}
         />
 
         <div className="flex gap-[20px] self-end">
           <Link to={"/"}>
             <button
-              onClick={() => localStorage.removeItem("listingFormData")}
+              onClick={() => {
+                localStorage.removeItem("listingFormData");
+                localStorage.removeItem("avatar");
+              }}
               className="h-[47px] text-[#F93B1D] hover:text-[#fff] hover:bg-[#F93B1D] border border-[#F93B1D] font-[500] rounded-[10px] px-[16px] py-[10px]"
             >
               გაუქმება
